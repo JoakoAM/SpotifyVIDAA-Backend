@@ -1,2 +1,0 @@
-# SpotifyVIDAA-Backend
-SpotifyVIDAA-Backend
