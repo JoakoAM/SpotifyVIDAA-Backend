@@ -1,4 +1,3 @@
-// server.js
 import express from "express";
 import fetch from "node-fetch";
 import cors from "cors";
@@ -12,12 +11,14 @@ app.use(express.json());
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const REDIRECT_URI = "https://spotifyvidaabackend.onrender.com/callback"; // debe coincidir con Spotify
+const REDIRECT_URI = process.env.REDIRECT_URI || "https://spotifyvidaabackend.onrender.com/callback";
 
-// Ruta principal para probar que el backend funciona
+let refresh_token = null; // guardamos refresh token en memoria (en producción usar DB)
+
+// Ruta de prueba
 app.get("/", (req, res) => res.send("✅ Backend Spotify funcionando"));
 
-// Login: redirige a Spotify para autorización
+// Login: redirige a Spotify
 app.get("/login", (req, res) => {
   const scopes = [
     "user-read-private",
@@ -60,15 +61,50 @@ app.get("/callback", async (req, res) => {
     });
 
     const data = await response.json();
+    refresh_token = data.refresh_token; // guardamos refresh token
 
-    console.log(data);
-    //Redirige al frontend con el access_token
-    res.redirect(
-      `https://joakoam.github.io/Spotify-VIDAA/#access_token=${data.access_token}`
-    );
+    // Redirige al frontend
+    res.redirect(process.env.FRONTEND_URL || `http://localhost:5500/index.html`);
   } catch (err) {
     console.error("Error en callback:", err);
     res.status(500).send("Error al procesar el callback");
+  }
+});
+
+// Función para obtener access token válido usando refresh token
+async function getAccessToken() {
+  if (!refresh_token) throw new Error("No refresh token disponible");
+
+  const response = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization:
+        "Basic " + Buffer.from(CLIENT_ID + ":" + CLIENT_SECRET).toString("base64"),
+    },
+    body: new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token,
+    }),
+  });
+
+  const data = await response.json();
+  return data.access_token;
+}
+
+// Endpoint para obtener canción actual
+app.get("/current", async (req, res) => {
+  try {
+    const access_token = await getAccessToken();
+    const response = await fetch("https://api.spotify.com/v1/me/player", {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error("Error obteniendo canción:", err);
+    res.status(500).send("Error obteniendo la canción actual");
   }
 });
 
