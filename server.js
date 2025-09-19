@@ -12,7 +12,11 @@ app.use(express.json());
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
+<<<<<<< HEAD
 const REDIRECT_URI = "https://spotifyvidaa-backend.onrender.com/callback"; // debe coincidir con Spotify
+=======
+const REDIRECT_URI = "https://joakoam.github.io/Spotify-VIDAA/"; // debe coincidir con Spotify
+>>>>>>> fdfdca890e5879ffee645f991e7997f60a9cccd1
 
 // Ruta principal para probar que el backend funciona
 app.get("/", (req, res) => res.send("✅ Backend Spotify funcionando"));
