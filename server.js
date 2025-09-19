@@ -108,5 +108,31 @@ app.get("/current", async (req, res) => {
   }
 });
 
+// Endpoint para obtener access token válido
+app.get("/get-token", async (req, res) => {
+  try {
+    if (!refresh_token) return res.status(400).json({ error: "No refresh token disponible" });
+
+    // Obtener access token usando refresh token
+    const response = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization:
+          "Basic " + Buffer.from(CLIENT_ID + ":" + CLIENT_SECRET).toString("base64"),
+      },
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token,
+      }),
+    });
+
+    const data = await response.json();
+    res.json({ access_token: data.access_token });
+  } catch (err) {
+    console.error("Error generando token:", err);
+    res.status(500).json({ error: "Error generando token" });
+  }
+});
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`✅ Backend corriendo en puerto ${PORT}`));
