@@ -60,10 +60,10 @@ app.get("/callback", async (req, res) => {
     const data = await response.json();
 
     console.log(data);
-    // Redirige al frontend con el access_token
-    // res.redirect(
-    //   `https://joakoam.github.io/Spotify-VIDAA/#access_token=${data.access_token}`
-    // );
+    //Redirige al frontend con el access_token
+    res.redirect(
+      `https://joakoam.github.io/Spotify-VIDAA/#access_token=${data.access_token}`
+    );
   } catch (err) {
     console.error("Error en callback:", err);
     res.status(500).send("Error al procesar el callback");
