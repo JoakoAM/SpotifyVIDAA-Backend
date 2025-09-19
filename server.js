@@ -25,6 +25,8 @@ app.get("/login", (req, res) => {
     "streaming",
     "user-modify-playback-state",
     "playlist-read-private",
+    "user-read-currently-playing",
+    "user-read-playback-state",
   ];
 
   const authUrl =
