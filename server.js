@@ -10,7 +10,7 @@ app.use(express.json());
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const REDIRECT_URI = "https://spotifyvidaa-backend.onrender.com";
+const REDIRECT_URI = "https://spotifyvidaa-backend.onrender.com/callback";
 
 app.get("/login", (req, res) => {
   const scopes = [
