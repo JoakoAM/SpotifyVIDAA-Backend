@@ -32,7 +32,7 @@ app.get("/login", (req, res) => {
     "?response_type=code" +
     "&client_id=" + CLIENT_ID +
     "&scope=" + scopes.join("%20") +
-    "&redirect_uri=" + encodeURIComponent(REDIRECT_URI);
+    "&redirect_uri=" + REDIRECT_URI;
 
   res.redirect(authUrl);
 });
