@@ -64,7 +64,7 @@ app.get("/callback", async (req, res) => {
     refresh_token = data.refresh_token; // guardamos refresh token
 
     // Redirige al frontend
-    res.redirect(process.env.FRONTEND_URL || `http://localhost:5500/index.html`);
+    res.redirect(process.env.FRONTEND_URL || `https://joakoam.github.io/Spotify-VIDAA`);
   } catch (err) {
     console.error("Error en callback:", err);
     res.status(500).send("Error al procesar el callback");
